@@ -1,7 +1,6 @@
 var mapBounds = [[0.17578097424708533,-214.98046875],[73.82482034613932, 25.13671875]];
 var geojsonLayer;
 var map = L.map('map',{maxBounds: mapBounds});
-geolocate();
 var Stamen_TonerLite = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     subdomains: 'abcd',
@@ -11,11 +10,11 @@ var Stamen_TonerLite = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/ton
 });
 
 Stamen_TonerLite.addTo(map);
-L.control.locate({
+
+var locater = L.control.locate({
     drawCircle: false,
     keepCurrentZoomLevel: true
-}).addTo(map);
-
+});
 var geomStyle = {
     'color': '#ff7800',
     // 'fillColor': '#ff7800'
@@ -69,7 +68,7 @@ function getInfo(e) {
                     '</div>'+
                     '</div>'+
                 '    <span class="contact"></span>' +
-                '    <span class="address"></span>' +
+                '    <span class="website"></span>' +
                 '    <div class="social">' +
                 '        <span class="twitter"></span>' +
                 '        <span class="facebook"></span>' +
@@ -82,15 +81,21 @@ function getInfo(e) {
                 //console.log(e);
                 infoContainer.append(templateHtml);
                 var currentCandidate = $('.candidate:last');
-                currentCandidate.find('.name').html('<b>'+element.firstlast+'</b>');
+                currentCandidate.find('.name').html('<b>'+element.firstlast+' ('+element.party+')'+'</b>');
                 currentCandidate.find('.term').html('<i>First elected </i>  ' + element.first_elected);
                 currentCandidate.find('.phone').html('<i class="fa fa-phone"></i>  ' + element.phone);
                 currentCandidate.find('.fax').html('<i class="fa fa-fax"></i>  ' + element.fax);
-                currentCandidate.find('.contact').html('<i class="fa fa-envelope"></i>  <a href="'+element.webform+'">Contact</a>');
+                currentCandidate.find('.contact').html('<i class="fa fa-envelope"></i>  <a href="'+element.webform+'" target="_blank">Contact</a>');
+                currentCandidate.find('.website').html('<i class="fa fa-share"></i>  <a href="'+element.website+'" target="_blank">Website</a>');
+                currentCandidate.find('.twitter').html('<i class="fa fa-twitter"></i>  <a href="https://twitter.com/'+element.twitter_id+'" target="_blank">'+element.twitter_id+'</a>');
+                currentCandidate.find('.facebook').html('<i class="fa fa-facebook"></i>  <a href="https://www.facebook.com/'+element.facebook_id+'" target="_blank">'+element.firstlast+'</a>');
             });
 
             foo = data;
             console.log(data);
+        },
+        error: function(error) {
+            $('#info').html('<div class="candidate"><h2 class="text-danger bg-danger text-center">No information available</h2></div>');
         }
     });
     $('.geoid').text(properties.geoid);
@@ -99,13 +104,13 @@ function getInfo(e) {
     $('.cd114fp').text(properties.stateabbr + properties.cd114fp);
 }
 function onEachFeature(feature, layer) {
-    // layer.bindPopup(feature.properties.id+' '+feature.properties.namelsad);
     layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
         click: getInfo
     });
 }
+
 map.on('load', function(e) {
     $.ajax({
         url: 'http://192.168.1.18:5000/bbox',
@@ -124,7 +129,6 @@ map.on('load', function(e) {
         }
     });
 });
-
 map.on('moveend', function(e) {
     $.ajax({
         url: 'http://192.168.1.18:5000/bbox',
@@ -146,3 +150,5 @@ map.on('moveend', function(e) {
         }
     });
 });
+locater.addTo(map);
+map.setView([39.232253, -101.909179], 4);
