@@ -13,6 +13,17 @@
             padding-left:0;
         }
         #map {height: 100%; width: 100%;}
+        .candidate {
+            padding: 0 20px;
+        }
+        .candidate + .candidate {
+            border-top: thin black;
+            border-top-style: solid;
+        }
+        #infoName {
+            width: 100%;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -20,13 +31,6 @@
 
         <div class="row no-gutter">
             <div class="col-md-3" id="info">
-                <span id="geoid"></span>
-                <br>
-                <span id="state"></span>
-                <br>
-                <span id="namelsad"></span>
-                <br>
-                <span id="cd114fp"></span>
             </div> <!-- info -->
 
             <div class="col-md-9">
