@@ -1,0 +1,41 @@
+<html>
+<head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <style type="text/css">
+        .no-gutter > [class*='col-'] {
+            padding-right:0;
+            padding-left:0;
+        }
+        #map {height: 100%; width: 100%;}
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+
+        <div class="row no-gutter">
+            <div class="col-md-3" id="info">
+                <span id="geoid"></span>
+                <br>
+                <span id="state"></span>
+                <br>
+                <span id="namelsad"></span>
+                <br>
+                <span id="cd114fp"></span>
+            </div> <!-- info -->
+
+            <div class="col-md-9">
+                <div id="map"></div>
+            </div>
+
+        </div> <!-- row -->
+    </div> <!-- container -->
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script> 
+    <script src="./js/geolocation.js"></script>
+    <script src="./js/map.js"></script>
+</body>
+</html>
