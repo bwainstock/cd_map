@@ -46,7 +46,7 @@ from flask.ext.cors import CORS
 app = Flask(__name__)
 CORS(app)
 # session = get_session()
-conn = psycopg2.connect(database="cd113", user="tigren", host="192.168.1.18")
+conn = psycopg2.connect(database="cd113")
 c = conn.cursor()
 
 
@@ -136,7 +136,7 @@ def get_state(statefp):
     return states.get(statefp, 'Unknown')
 
 
-@app.route('/', methods=['GET'])
+@app.route('/api/', methods=['GET'])
 def district_geometry():
     simplify = get_simplify_factor(request.args.get('zoom'))
     districts = c.execute(
@@ -146,7 +146,7 @@ def district_geometry():
     return json.dumps(fc)
 
 
-@app.route('/district/', methods=['GET'])
+@app.route('/api/district/', methods=['GET'])
 def get_opensecrets():
     idcode = request.args.get('idcode')
     url = 'http://www.opensecrets.org/api/'
@@ -158,7 +158,7 @@ def get_opensecrets():
     return json.dumps(data.json()['response']['legislator'])
 
 
-@app.route('/bbox/', methods=['GET'])
+@app.route('/api/bbox/', methods=['GET'])
 def cdistrict_bbox():
     bbox = request.args.get('bbox')
     zoom = request.args.get('zoom')
@@ -179,4 +179,4 @@ def cdistrict_bbox():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5001)

@@ -43,7 +43,7 @@ function resetHighlight(e) {
 function getInfo(e) {
     var properties = e.target.feature.properties;
     $.ajax({
-        url: 'http://192.168.1.18:5000/district/',
+        url: 'http://104.131.134.163/api/district/',
         dataType: 'json',
         data: {
             'idcode': properties.stateabbr + properties.cd114fp
@@ -113,25 +113,28 @@ function onEachFeature(feature, layer) {
 
 map.on('load', function(e) {
     $.ajax({
-        url: 'http://192.168.1.18:5000/bbox',
+        url: 'http://104.131.134.163/api/bbox/',
         dataType: 'json',
         data: {
             'bbox': e.target.getBounds().toBBoxString(),
             'zoom': map.getZoom()
         },
         success: function (data) {
+	    console.log('loaded');
             geojsonLayer = L.geoJson(data, {style: geomStyle, onEachFeature: onEachFeature});
             geojsonLayer.addTo(map);
             console.log(data);
         },
         error: function (error) {
+		console.log('loaded');
             console.log(error);
         }
     });
 });
+locater.addTo(map);
 map.on('moveend', function(e) {
     $.ajax({
-        url: 'http://192.168.1.18:5000/bbox',
+        url: 'http://104.131.134.163/api/bbox/',
         dataType: 'json',
         data: {
             'bbox': e.target.getBounds().toBBoxString(),
@@ -146,9 +149,9 @@ map.on('moveend', function(e) {
             console.log(data);
         },
         error: function (error) {
+		console.log('movened');
             console.log(error);
         }
     });
 });
-locater.addTo(map);
 map.setView([39.232253, -101.909179], 4);
