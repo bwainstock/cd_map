@@ -12,6 +12,7 @@ import requests
 # from geoalchemy2 import Geometry
 
 from flask import Flask
+from flask import g
 from flask import request
 from flask.ext.cors import CORS
 
@@ -45,9 +46,7 @@ from flask.ext.cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-# session = get_session()
 conn = psycopg2.connect(database="cd113")
-c = conn.cursor()
 
 
 def get_simplify_factor(zoom):
@@ -136,12 +135,17 @@ def get_state(statefp):
     return states.get(statefp, 'Unknown')
 
 
+@app.before_request
+def before_request():
+    g.c = conn.cursor()
+
+
 @app.route('/api/', methods=['GET'])
 def district_geometry():
     simplify = get_simplify_factor(request.args.get('zoom'))
-    districts = c.execute(
+    districts = g.c.execute(
         'SELECT id, statefp, cd114fp, geoid, namelsad, ST_AsText(ST_Simplify(geom, %s)) from districts', (simplify,))
-    districts = c.fetchall()
+    districts = g.c.fetchall()
     fc = FeatureCollection([Feature(geometry=wkt.loads(x[-1]), properties={'id': str(x[0])}) for x in districts])
     return json.dumps(fc)
 
@@ -164,10 +168,10 @@ def cdistrict_bbox():
     zoom = request.args.get('zoom')
     simplify = get_simplify_factor(zoom)
     bounds = [float(x) for x in bbox.split(',')]
-    districts = c.execute(
+    districts = g.c.execute(
         'SELECT id, statefp, cd114fp, geoid, namelsad, ST_AsText(ST_Simplify(geom, %s)) from districts WHERE ST_MakeEnvelope(%s,%s,%s,%s) && geom',
         [simplify] + bounds)
-    districts = c.fetchall()
+    districts = g.c.fetchall()
     fc = FeatureCollection([Feature(geometry=wkt.loads(x[-1]), properties={'id': str(x[0]),
                                                                            'state': get_state(x[1]),
                                                                            'stateabbr': get_state_abbr(x[1]),
