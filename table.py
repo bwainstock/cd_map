@@ -138,8 +138,8 @@ def get_state(statefp):
 def before_first_request():
     g.conn = psycopg2.connect(database="cd113")
 
-@app.before_first_request
-def before_first_request():
+@app.before_request
+def before_request():
     g.c = g.conn.cursor()
 
 @app.route('/api/', methods=['GET'])
