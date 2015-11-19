@@ -136,9 +136,11 @@ def get_state(statefp):
 
 @app.before_first_request
 def before_first_request():
-    conn = psycopg2.connect(database="cd113")
-    g.c = conn.cursor()
+    g.conn = psycopg2.connect(database="cd113")
 
+@app.before_first_request
+def before_first_request():
+    g.c = g.conn.cursor()
 
 @app.route('/api/', methods=['GET'])
 def district_geometry():
