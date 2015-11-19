@@ -134,13 +134,10 @@ def get_state(statefp):
     return states.get(statefp, 'Unknown')
 
 
-@app.before_first_request
-def before_first_request():
-    g.conn = psycopg2.connect(database="cd113")
-
 @app.before_request
 def before_request():
-    g.c = g.conn.cursor()
+    conn = psycopg2.connect(database="cd113")
+    g.c = conn.cursor()
 
 @app.route('/api/', methods=['GET'])
 def district_geometry():
