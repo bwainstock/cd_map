@@ -11,16 +11,13 @@ var Stamen_TonerLite = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/ton
 
 Stamen_TonerLite.addTo(map);
 
-var locater = L.control.locate({
-    drawCircle: false,
-    keepCurrentZoomLevel: true
-});
 var geomStyle = {
-    'color': '#ff7800',
-     'fillColor': '#ff7800'
+    'color': 'black',
+    'dashArray': '1, 5',
+    // 'fillColor': '#ff7800'
     'opacity': 0.65,
-    'weight': 2,
-    'fillOpacity': 0.3
+    'weight': 1,
+    'fillOpacity': 0.15
 };
 function highlightFeature(e) {
     var layer = e.target;
@@ -42,8 +39,9 @@ function resetHighlight(e) {
 }
 function getInfo(e) {
     var properties = e.target.feature.properties;
+    console.log(e.target.feature);
     $.ajax({
-        url: '/api/district/',
+        url: 'http://localhost:5001/api/district/',
         dataType: 'json',
         data: {
             'idcode': properties.stateabbr + properties.cd114fp
@@ -74,13 +72,19 @@ function getInfo(e) {
                 '        <span class="facebook"></span>' +
                 '    </div>' +
                 '</div>';
-            var infoContainer = $('#info');
+            $('#info-state').html('<h1 style="text-align: center;">'+properties.state+'</h1>')
+            $('#info-district').html('<h3 style="text-align: center;">'+properties.namelsad+'</h3>')
+            var infoContainer = $('#info-info');
             infoContainer.empty();
             data.forEach(function(e, i){
                 var element = e['@attributes'];
                 //console.log(e);
                 infoContainer.append(templateHtml);
                 var currentCandidate = $('.candidate:last');
+                if (element.party === 'R') {
+                    currentCandidate.css("background", 'url("./img/transparent-red.png")');
+                }
+                else { currentCandidate.css("background", 'url("./img/transparent-blue.png")'); }
                 currentCandidate.find('.name').html('<b>'+element.firstlast+' ('+element.party+')'+'</b>');
                 currentCandidate.find('.term').html('<i>First elected </i>  ' + element.first_elected);
                 currentCandidate.find('.phone').html('<i class="fa fa-phone"></i>  ' + element.phone);
@@ -95,7 +99,7 @@ function getInfo(e) {
             console.log(data);
         },
         error: function(error) {
-            $('#info').html('<div class="candidate"><h2 class="text-danger bg-danger text-center">No information available</h2></div>');
+            $('#info-info').html('<div class="candidate"><h2 class="">No information available</h2></div>');
         }
     });
     $('.geoid').text(properties.geoid);
@@ -113,7 +117,7 @@ function onEachFeature(feature, layer) {
 
 map.on('load', function(e) {
     $.ajax({
-        url: '/api/bbox/',
+        url: 'http://localhost:5001/api/bbox/',
         dataType: 'json',
         data: {
             'bbox': e.target.getBounds().toBBoxString(),
@@ -131,10 +135,9 @@ map.on('load', function(e) {
         }
     });
 });
-locater.addTo(map);
 map.on('moveend', function(e) {
     $.ajax({
-        url: '/api/bbox/',
+        url: 'http://localhost:5001/api/bbox/',
         dataType: 'json',
         data: {
             'bbox': e.target.getBounds().toBBoxString(),
