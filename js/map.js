@@ -17,7 +17,7 @@ var locater = L.control.locate({
 });
 var geomStyle = {
     'color': '#ff7800',
-     'fillColor': '#ff7800'
+    'fillColor': '#ff7800',
     'opacity': 0.65,
     'weight': 2,
     'fillOpacity': 0.3
