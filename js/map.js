@@ -43,7 +43,7 @@ function resetHighlight(e) {
 function getInfo(e) {
     var properties = e.target.feature.properties;
     $.ajax({
-        url: 'http://104.131.134.163/api/district/',
+        url: 'http://localhost/api/district/',
         dataType: 'json',
         data: {
             'idcode': properties.stateabbr + properties.cd114fp
@@ -113,7 +113,7 @@ function onEachFeature(feature, layer) {
 
 map.on('load', function(e) {
     $.ajax({
-        url: 'http://104.131.134.163/api/bbox/',
+        url: 'http://localhost/api/bbox/',
         dataType: 'json',
         data: {
             'bbox': e.target.getBounds().toBBoxString(),
@@ -134,7 +134,7 @@ map.on('load', function(e) {
 locater.addTo(map);
 map.on('moveend', function(e) {
     $.ajax({
-        url: 'http://104.131.134.163/api/bbox/',
+        url: 'http://localhost/api/bbox/',
         dataType: 'json',
         data: {
             'bbox': e.target.getBounds().toBBoxString(),
