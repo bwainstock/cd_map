@@ -46,7 +46,6 @@ from flask.ext.cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-conn = psycopg2.connect(database="cd113")
 
 
 def get_simplify_factor(zoom):
@@ -135,8 +134,9 @@ def get_state(statefp):
     return states.get(statefp, 'Unknown')
 
 
-@app.before_request
-def before_request():
+@app.before_first_request
+def before_first_request():
+    conn = psycopg2.connect(database="cd113")
     g.c = conn.cursor()
 
 
