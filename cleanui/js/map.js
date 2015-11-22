@@ -39,7 +39,7 @@ function getInfo(e) {
     var properties = e.target.feature.properties;
     console.log(e.target.feature);
     $.ajax({
-        url: 'http://localhost:5001/api/district/',
+        url: '/api/district/',
         dataType: 'json',
         data: {
             'idcode': properties.stateabbr + properties.cd114fp
@@ -115,7 +115,7 @@ function onEachFeature(feature, layer) {
 
 map.on('load', function(e) {
     $.ajax({
-        url: 'http://localhost:5001/api/bbox/',
+        url: '/api/bbox/',
         dataType: 'json',
         data: {
             'bbox': e.target.getBounds().toBBoxString(),
@@ -135,7 +135,7 @@ map.on('load', function(e) {
 });
 map.on('moveend', function(e) {
     $.ajax({
-        url: 'http://localhost:5001/api/bbox/',
+        url: '/api/bbox/',
         dataType: 'json',
         data: {
             'bbox': e.target.getBounds().toBBoxString(),
